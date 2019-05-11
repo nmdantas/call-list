@@ -27,8 +27,9 @@ public class PasswordUtils {
 
         byte[] buffer = new byte[hexString.length() / 2];
         byte[] hexByteArray = new BigInteger(hexString, 16).toByteArray();
+        int offset = hexByteArray.length - buffer.length;
 
-        System.arraycopy(hexByteArray, 1, buffer, 0, buffer.length);
+        System.arraycopy(hexByteArray, offset, buffer, 0, buffer.length);
 
         return buffer;
     }

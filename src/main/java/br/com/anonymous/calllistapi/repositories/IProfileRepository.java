@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface IProfileRepository extends JpaRepository<Profile, Long> {
-    List<Profile> findByUserId(Long userId);
+    List<Profile> findByUserIdAndActiveTrue(Long userId);
 }

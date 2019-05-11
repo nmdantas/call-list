@@ -1,6 +1,7 @@
 package br.com.anonymous.calllistapi.payloads;
 
 import br.com.anonymous.calllistapi.models.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +13,7 @@ public class UserPayload {
 
     private String username;
 
+    @JsonProperty("create_date")
     private LocalDateTime createDate;
 
     public UserPayload() {

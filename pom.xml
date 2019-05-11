@@ -11,7 +11,7 @@
 	<groupId>br.com.anonymous</groupId>
 	<artifactId>call-list-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>call-list-api</name>
+	<code>call-list-api</code>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>

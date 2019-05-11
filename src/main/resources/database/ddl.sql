@@ -29,7 +29,7 @@ drop table if exists USER;
 create table ACCESS_CODE
 (
    ID                   bigint not null auto_increment,
-   COD                  varchar(6) not null,
+   CODE                 varchar(8) not null,
    CREATE_DATE          datetime not null default CURRENT_TIMESTAMP,
    MEETING_ID           bigint not null,
    primary key (ID)
@@ -41,7 +41,7 @@ create table ACCESS_CODE
 create table MEETING
 (
    ID                   bigint not null auto_increment,
-   USER_ID              bigint not null,
+   PROFILE_ID           bigint not null,
    NAME                 varchar(200) not null,
    DATE                 datetime not null,
    primary key (ID)
@@ -52,10 +52,9 @@ create table MEETING
 /*==============================================================*/
 create table PARTICIPANT
 (
-   ID                   bigint not null,
+   ID                   bigint not null auto_increment,
    PROFILE_ID           bigint not null,
    MEETING_ID           bigint not null,
-   USER_ID              bigint,
    primary key (ID)
 );
 
@@ -106,10 +105,10 @@ create index USER on USER
    USER
 );
 
-alter table ACCESS_CODE add constraint FK_COD_MEETING foreign key (MEETING_ID)
+alter table ACCESS_CODE add constraint FK_CODE_MEETING foreign key (MEETING_ID)
       references MEETING (ID) on delete restrict on update restrict;
 
-alter table MEETING add constraint FK_USER_MEETING foreign key (USER_ID)
+alter table MEETING add constraint FK_PROFILE_MEETING foreign key (PROFILE_ID)
       references USER (ID) on delete restrict on update restrict;
 
 alter table PARTICIPANT add constraint FK_MEETING_PARTICIPANT foreign key (MEETING_ID)

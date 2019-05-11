@@ -1,48 +1,36 @@
-package br.com.anonymous.calllistapi.models;
+package br.com.anonymous.calllistapi.payloads;
 
-import javax.persistence.*;
+import br.com.anonymous.calllistapi.models.Profile;
 
-@Entity
-@Table(name="PROFILE")
-public class Profile {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+public class ProfilePayload {
     private Long id;
 
-    @Column(name="user_id")
-    private Long userId;
-
-    @Column(name="type")
     private Integer type;
 
-    @Column(name="email")
     private String email;
 
-    @Column(name="phone")
     private String phone;
 
-    @Column(name="company")
     private String company;
 
-    @Column(name="role")
     private String role;
 
-    @Column(name="active")
     private boolean active;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="user_id", insertable=false, updatable=false)
-    private User user;
-
-    public Profile() {
+    public ProfilePayload() {
         super();
     }
 
-    public Profile(Long id) {
+    public ProfilePayload(Profile entity) {
         this();
 
-        this.id = id;
+        this.id = entity.getId();
+        this.type = entity.getType();
+        this.email = entity.getEmail();
+        this.phone = entity.getPhone();
+        this.company = entity.getCompany();
+        this.role = entity.getRole();
+        this.active = entity.isActive();
     }
 
     public Long getId() {
@@ -51,14 +39,6 @@ public class Profile {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public Integer getType() {
@@ -107,13 +87,5 @@ public class Profile {
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }
