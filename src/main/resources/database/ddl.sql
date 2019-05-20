@@ -29,7 +29,7 @@ drop table if exists USER;
 create table ACCESS_CODE
 (
    ID                   bigint not null auto_increment,
-   CODE                 varchar(8) not null,
+   CODE                 int(4) not null,
    CREATE_DATE          datetime not null default CURRENT_TIMESTAMP,
    MEETING_ID           bigint not null,
    primary key (ID)
@@ -65,11 +65,11 @@ create table PROFILE
 (
    ID                   bigint not null auto_increment,
    USER_ID              bigint,
-   TYPE                 int(1) not null,
    EMAIL                varchar(150) not null,
    PHONE                varchar(20) not null,
    COMPANY              varchar(150),
    ROLE                 varchar(100),
+   MAIN                 boolean,
    ACTIVE               boolean,
    primary key (ID),
    key AK_KEY_2 (USER_ID, TYPE)
