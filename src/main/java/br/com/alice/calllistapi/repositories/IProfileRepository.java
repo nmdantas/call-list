@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface IProfileRepository extends JpaRepository<Profile, Long> {
     List<Profile> findByUserIdAndActiveTrue(Long userId);
+    List<Profile> findByEmailAndActiveTrue(String email);
     boolean existsByUserId(Long userId);
 
     @Modifying

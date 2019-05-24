@@ -21,6 +21,8 @@ drop table if exists PROFILE;
 
 -- drop index NAME on USER;
 
+drop table if exists RECOVERY;
+
 drop table if exists USER;
 
 /*==============================================================*/
@@ -76,6 +78,17 @@ create table PROFILE
 );
 
 /*==============================================================*/
+/* Table: RECOVERY                                              */
+/*==============================================================*/
+create table RECOVERY
+(
+    ID                 varchar(36) not null,
+    USER_ID            bigint not null,
+    EXPIRE_AT          datetime not null,
+    primary key (ID)
+);
+
+/*==============================================================*/
 /* Table: USER                                                  */
 /*==============================================================*/
 create table USER
@@ -118,5 +131,8 @@ alter table PARTICIPANT add constraint FK_PROFILE_PARTICIPANT foreign key (PROFI
       references PROFILE (ID) on delete restrict on update restrict;
 
 alter table PROFILE add constraint FK_USER_PROFILE foreign key (USER_ID)
+      references USER (ID) on delete restrict on update restrict;
+
+alter table RECOVERY add constraint FK_USER_RECOVERY foreign key (USER_ID)
       references USER (ID) on delete restrict on update restrict;
 

@@ -79,6 +79,18 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
+    @ApiOperation(value = "Reset", notes = "Reset password")
+    @RequestMapping(value="/reset", method=RequestMethod.POST)
+    public ResponseEntity<?> reset(@RequestBody ResetPasswordRequest request) {
+        boolean success = userService.resetPassword(request);
+
+        if (success) {
+            return ResponseEntity.ok().body(new ResponseWrapper<>(true));
+        }
+
+        return ResponseEntity.badRequest().build();
+    }
+
     @ApiOperation(value = "Find user", notes = "Find user by user id", response = UserPayload.class)
     @RequestMapping(value="/{userId}", method=RequestMethod.GET)
     public ResponseEntity<?> findById(@PathVariable long userId) {

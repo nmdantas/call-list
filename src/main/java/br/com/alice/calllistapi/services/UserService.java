@@ -1,13 +1,16 @@
 package br.com.alice.calllistapi.services;
 
+import br.com.alice.calllistapi.models.Profile;
+import br.com.alice.calllistapi.models.Recovery;
 import br.com.alice.calllistapi.models.User;
-import br.com.alice.calllistapi.payloads.CreateUserRequest;
-import br.com.alice.calllistapi.payloads.LoginRequest;
-import br.com.alice.calllistapi.payloads.UpdateUserRequest;
-import br.com.alice.calllistapi.payloads.UserPayload;
+import br.com.alice.calllistapi.payloads.*;
+import br.com.alice.calllistapi.repositories.IProfileRepository;
+import br.com.alice.calllistapi.repositories.IRecoveryRepository;
 import br.com.alice.calllistapi.repositories.IUserRepository;
 import br.com.alice.calllistapi.utils.PasswordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +20,20 @@ import java.util.Optional;
 @Service
 public class UserService extends GenericService<IUserRepository, User, UserPayload> {
 
+    private JavaMailSender emailSender;
+    private IProfileRepository profileRepository;
+    private IRecoveryRepository recoveryRepository;
+
     @Autowired
-    public UserService(IUserRepository userRepository) {
+    public UserService(JavaMailSender emailSender,
+                       IUserRepository userRepository,
+                       IProfileRepository profileRepository,
+                       IRecoveryRepository recoveryRepository) {
         super(userRepository);
+
+        this.emailSender = emailSender;
+        this.profileRepository = profileRepository;
+        this.recoveryRepository = recoveryRepository;
     }
 
     @Transactional
@@ -90,5 +104,29 @@ public class UserService extends GenericService<IUserRepository, User, UserPaylo
         }
 
         return new UserPayload(user);
+    }
+
+    public boolean resetPassword(ResetPasswordRequest request) {
+        Optional<Profile> profile = profileRepository.findByEmailAndActiveTrue(request.getEmail()).stream().findFirst();
+
+        if (!profile.isPresent()) {
+            return false;
+        }
+
+        User user = profile.get().getUser();
+        Recovery recovery = new Recovery();
+        recovery.setUserId(user.getId());
+        recovery.setExpireAt(LocalDateTime.now().plusHours(1L));
+
+        recoveryRepository.save(recovery);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(request.getEmail());
+        message.setSubject("Password Reset");
+        message.setText(recovery.getId());
+
+        emailSender.send(message);
+
+        return true;
     }
 }
