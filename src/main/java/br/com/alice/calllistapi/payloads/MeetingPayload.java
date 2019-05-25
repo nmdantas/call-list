@@ -1,6 +1,7 @@
 package br.com.alice.calllistapi.payloads;
 
 import br.com.alice.calllistapi.models.Meeting;
+import br.com.alice.calllistapi.models.ViewMeeting;
 import org.springframework.hateoas.ResourceSupport;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ public class MeetingPayload extends ResourceSupport {
     private String name;
     private LocalDateTime date;
     private Integer accessCode;
+    private String company;
 
     public MeetingPayload() {
         super();
@@ -25,6 +27,15 @@ public class MeetingPayload extends ResourceSupport {
         if (!entity.getAccessCodes().isEmpty()) {
             this.accessCode = entity.getAccessCodes().get(0).getCode();
         }
+    }
+
+    public MeetingPayload(ViewMeeting entity) {
+        this();
+
+        this.meetingId = entity.getMeetingId();
+        this.name = entity.getMeetingName();
+        this.date = entity.getMeetingDate();
+        this.company = entity.getCompany();
     }
 
     public Long getMeetingId() {
@@ -57,5 +68,13 @@ public class MeetingPayload extends ResourceSupport {
 
     public void setAccessCode(Integer accessCode) {
         this.accessCode = accessCode;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
     }
 }

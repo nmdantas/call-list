@@ -122,7 +122,7 @@ alter table ACCESS_CODE add constraint FK_CODE_MEETING foreign key (MEETING_ID)
       references MEETING (ID) on delete restrict on update restrict;
 
 alter table MEETING add constraint FK_PROFILE_MEETING foreign key (PROFILE_ID)
-      references USER (ID) on delete restrict on update restrict;
+      references PROFILE (ID) on delete restrict on update restrict;
 
 alter table PARTICIPANT add constraint FK_MEETING_PARTICIPANT foreign key (MEETING_ID)
       references MEETING (ID) on delete restrict on update restrict;

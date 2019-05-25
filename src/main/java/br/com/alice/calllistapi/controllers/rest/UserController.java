@@ -79,16 +79,34 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    @ApiOperation(value = "Reset", notes = "Reset password")
-    @RequestMapping(value="/reset", method=RequestMethod.POST)
-    public ResponseEntity<?> reset(@RequestBody ResetPasswordRequest request) {
-        boolean success = userService.resetPassword(request);
+    @ApiOperation(value = "Recovery", notes = "Recovery password")
+    @RequestMapping(value="/recovery", method=RequestMethod.POST)
+    public ResponseEntity<?> recoveryPassword(@RequestBody RecoveryPasswordRequest request) {
+        boolean success = userService.recoveryPassword(request);
 
         if (success) {
             return ResponseEntity.ok().body(new ResponseWrapper<>(true));
         }
 
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.notFound().build();
+    }
+
+    @ApiOperation(value = "Reset", notes = "Get info to reset password", response = UserPayload.class)
+    @RequestMapping(value="/reset", method=RequestMethod.GET)
+    public ResponseEntity<?> validateResetPassword(@RequestParam(name="recovery_id") String recoveryId) {
+        UserPayload user = userService.validatePasswordReset(recoveryId);
+
+        if (user != null) {
+            Link selfLink = ControllerLinkBuilder.linkTo(UserController.class).slash(user.getUserId()).withSelfRel();
+            Link profilesLink = linkTo(methodOn(UserController.class).findProfilesByUserId(user.getUserId())).withRel("profiles");
+
+            user.add(selfLink);
+            user.add(profilesLink);
+
+            return ResponseEntity.ok().body(user);
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     @ApiOperation(value = "Find user", notes = "Find user by user id", response = UserPayload.class)
@@ -114,16 +132,35 @@ public class UserController {
     public ResponseEntity<?> updateUser(@PathVariable long userId, @RequestBody UpdateUserRequest request) {
         UserPayload user = userService.update(userId, request);
 
-        // Caso nao seja possivel criar o usuario retorna um erro
-        if (user == null) {
-            return ResponseEntity.badRequest().build();
+        if (user != null) {
+            Link selfLink = ControllerLinkBuilder.linkTo(UserController.class).slash(user.getUserId()).withSelfRel();
+            Link profilesLink = linkTo(methodOn(UserController.class).findProfilesByUserId(user.getUserId())).withRel("profiles");
+
+            user.add(selfLink);
+            user.add(profilesLink);
+
+            return ResponseEntity.ok().body(user);
         }
 
-        Link selfLink = ControllerLinkBuilder.linkTo(UserController.class).slash(user.getUserId()).withSelfRel();
+        return ResponseEntity.notFound().build();
+    }
 
-        user.add(selfLink);
+    @ApiOperation(value = "Reset", notes = "Reset password", response = UserPayload.class)
+    @RequestMapping(value="/{userId}/reset", method=RequestMethod.PATCH)
+    public ResponseEntity<?> resetPassword(@PathVariable long userId, @RequestBody ResetPasswordRequest request) {
+        UserPayload user = userService.resetPassword(userId, request);
 
-        return ResponseEntity.ok().body(user);
+        if (user != null) {
+            Link selfLink = ControllerLinkBuilder.linkTo(UserController.class).slash(user.getUserId()).withSelfRel();
+            Link profilesLink = linkTo(methodOn(UserController.class).findProfilesByUserId(user.getUserId())).withRel("profiles");
+
+            user.add(selfLink);
+            user.add(profilesLink);
+
+            return ResponseEntity.ok().body(user);
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     @ApiOperation(value = "List user profiles", notes = "List all user profiles", responseContainer = "Array", response = ProfilePayload.class)
@@ -149,5 +186,27 @@ public class UserController {
         profile.add(selfLink);
 
         return ResponseEntity.ok().body(profile);
+    }
+
+    @ApiOperation(value = "List user meetings", notes = "List all meetings", responseContainer = "Array", response = MeetingPayload.class)
+    @RequestMapping(value="/{userId}/meetings", method=RequestMethod.GET)
+    public ResponseEntity<?> findMeetingsByUserId(@PathVariable long userId) {
+        List<MeetingPayload> meetings = userService.findMeetings(userId);
+
+        for (int i = 0; i < meetings.size(); i++) {
+            Link selfLink = linkTo(methodOn(MeetingController.class).findById(meetings.get(i).getMeetingId())).withRel("details");
+
+            meetings.get(i).add(selfLink);
+        }
+
+        return ResponseEntity.ok().body(meetings);
+    }
+
+    @ApiOperation(value = "List user contacts", notes = "List all contacts", responseContainer = "Array", response = ContactPayload.class)
+    @RequestMapping(value="/{userId}/contacts", method=RequestMethod.GET)
+    public ResponseEntity<?> findContactsByUserId(@PathVariable long userId) {
+        List<ContactPayload> contacts = userService.findContacts(userId);
+
+        return ResponseEntity.ok().body(contacts);
     }
 }

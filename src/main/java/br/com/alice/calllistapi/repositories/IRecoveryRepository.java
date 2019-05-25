@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IRecoveryRepository extends JpaRepository<Recovery, Long> {
+public interface IRecoveryRepository extends JpaRepository<Recovery, String> {
 }

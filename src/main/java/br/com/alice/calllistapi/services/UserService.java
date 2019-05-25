@@ -1,12 +1,8 @@
 package br.com.alice.calllistapi.services;
 
-import br.com.alice.calllistapi.models.Profile;
-import br.com.alice.calllistapi.models.Recovery;
-import br.com.alice.calllistapi.models.User;
+import br.com.alice.calllistapi.models.*;
 import br.com.alice.calllistapi.payloads.*;
-import br.com.alice.calllistapi.repositories.IProfileRepository;
-import br.com.alice.calllistapi.repositories.IRecoveryRepository;
-import br.com.alice.calllistapi.repositories.IUserRepository;
+import br.com.alice.calllistapi.repositories.*;
 import br.com.alice.calllistapi.utils.PasswordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -15,25 +11,33 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService extends GenericService<IUserRepository, User, UserPayload> {
 
+    private static final long EXPIRE_INTERVAL_IN_HOURS = 1L;
+
     private JavaMailSender emailSender;
     private IProfileRepository profileRepository;
     private IRecoveryRepository recoveryRepository;
+    private IViewContactRepository viewContactRepository;
+    private IViewMeetingRepository viewMeetingRepository;
 
     @Autowired
     public UserService(JavaMailSender emailSender,
                        IUserRepository userRepository,
                        IProfileRepository profileRepository,
-                       IRecoveryRepository recoveryRepository) {
+                       IRecoveryRepository recoveryRepository,
+                       IViewContactRepository viewContactRepository,
+                       IViewMeetingRepository viewMeetingRepository) {
         super(userRepository);
 
         this.emailSender = emailSender;
         this.profileRepository = profileRepository;
         this.recoveryRepository = recoveryRepository;
+        this.viewContactRepository = viewContactRepository;
+        this.viewMeetingRepository = viewMeetingRepository;
     }
 
     @Transactional
@@ -106,7 +110,7 @@ public class UserService extends GenericService<IUserRepository, User, UserPaylo
         return new UserPayload(user);
     }
 
-    public boolean resetPassword(ResetPasswordRequest request) {
+    public boolean recoveryPassword(RecoveryPasswordRequest request) {
         Optional<Profile> profile = profileRepository.findByEmailAndActiveTrue(request.getEmail()).stream().findFirst();
 
         if (!profile.isPresent()) {
@@ -116,17 +120,79 @@ public class UserService extends GenericService<IUserRepository, User, UserPaylo
         User user = profile.get().getUser();
         Recovery recovery = new Recovery();
         recovery.setUserId(user.getId());
-        recovery.setExpireAt(LocalDateTime.now().plusHours(1L));
+        recovery.setExpireAt(LocalDateTime.now().plusHours(EXPIRE_INTERVAL_IN_HOURS));
 
         recoveryRepository.save(recovery);
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(request.getEmail());
-        message.setSubject("Password Reset");
+        message.setSubject("Password Recovery");
         message.setText(recovery.getId());
 
         emailSender.send(message);
 
         return true;
+    }
+
+    public UserPayload validatePasswordReset(String recoveryId) {
+        Optional<Recovery> recoveryInfo = recoveryRepository.findById(recoveryId);
+
+        if (!recoveryInfo.isPresent() || LocalDateTime.now().isAfter(recoveryInfo.get().getExpireAt())) {
+            return null;
+        }
+
+        recoveryRepository.delete(recoveryInfo.get());
+
+        return new UserPayload(recoveryInfo.get().getUser());
+    }
+
+    public UserPayload resetPassword(long userId, ResetPasswordRequest request) {
+        Optional<User> user = repository.findById(userId);
+
+        if (!user.isPresent()) {
+            return null;
+        }
+
+        String saltString = PasswordUtils.generateSaltString();
+        String finalPassword = PasswordUtils.generateHashedPassword(saltString, request.getPassword());
+
+        user.get().setSalt(saltString);
+        user.get().setPassword(finalPassword);
+
+        User updatedUser = repository.save(user.get());
+
+        return new UserPayload(updatedUser);
+    }
+
+    public List<MeetingPayload> findMeetings(long userId) {
+        List<ViewMeeting> viewMeetings = viewMeetingRepository.findByUser(userId);
+        List<MeetingPayload> meetings = new ArrayList<>();
+
+        for (int i = 0; i < viewMeetings.size(); i++) {
+            meetings.add(new MeetingPayload(viewMeetings.get(i)));
+        }
+
+        return meetings;
+    }
+
+    public List<ContactPayload> findContacts(long userId) {
+        List<ViewContact> viewContacts = viewContactRepository.findByUser(userId);
+        List<ContactPayload> contacts = new ArrayList<>();
+
+        for (int i = 0; i < viewContacts.size(); i++) {
+            ViewContact viewContact = viewContacts.get(i);
+            ContactPayload contact = new ContactPayload(viewContact.getUserId(), viewContact.getUserName());
+            int index = contacts.indexOf(contact);
+
+            if (index > -1) {
+                contact = contacts.get(index);
+                contact.getDetails().add(new ContactDetailsPayload(viewContact));
+            } else {
+                contact.getDetails().add(new ContactDetailsPayload(viewContact));
+                contacts.add(contact);
+            }
+        }
+
+        return contacts;
     }
 }
