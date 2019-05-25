@@ -1,0 +1,510 @@
+{
+	"info": {
+		"_postman_id": "e234b2bd-566f-432d-a215-f7ff4d0b1d98",
+		"name": "Call List",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Reset Password",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/users/reset?recovery_id=5ed62966-5a40-4748-90f1-e8604423aa66",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"users",
+						"reset"
+					],
+					"query": [
+						{
+							"key": "recovery_id",
+							"value": "5ed62966-5a40-4748-90f1-e8604423aa66"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reset Password",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"password\": \"1234567890\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/users/2/reset",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"users",
+						"2",
+						"reset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Recovery Password",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"n.moraes.dantas@gmail.com\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/users/recovery",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"users",
+						"recovery"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Meeting Participants",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"profileId\": 3\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/meetings/2/participants",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"meetings",
+						"2",
+						"participants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Metting Codes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/meetings/1/codes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"meetings",
+						"1",
+						"codes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Metting Details",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/meetings/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"meetings",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Metting Create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Call List\",\n\t\"date\": \"2019-05-28T10:00:00\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/profiles/5/meetings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"profiles",
+						"5",
+						"meetings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Profile Details",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/profiles/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"profiles",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Profiles",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/users/1/profiles",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"users",
+						"1",
+						"profiles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Profile Create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"thiago@fabbrika.com.br\",\n\t\"phone\": \"\",\n\t\"company\": \"Fabbrika\",\n\t\"role\": \"Chefe\",\n\t\"main\": true\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/users/4/profiles",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"users",
+						"4",
+						"profiles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"nmdantas\",\n\t\"password\": \"1234567890\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/users/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Thiago Fernando Martim Ito\",\n\t\"username\": \"tfmito\",\n\t\"password\": \"alice\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Users List",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/users?page=0&size=10&sort=name,asc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"users"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						},
+						{
+							"key": "sort",
+							"value": "name,asc"
+						},
+						{
+							"key": "name.dir",
+							"value": "desc",
+							"disabled": true
+						},
+						{
+							"key": "id",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "username",
+							"value": "nmdantas",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Metting Enter",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"profileId\": 4\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/meetings/6797/enter",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"meetings",
+						"6797",
+						"enter"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "All Meetings",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/users/2/meetings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"users",
+						"2",
+						"meetings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "All Contacts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/call-list/api/v1/users/2/contacts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"call-list",
+						"api",
+						"v1",
+						"users",
+						"2",
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
